@@ -5,256 +5,461 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Download Center</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:#050a06;overflow-x:hidden;}
+
+        /* ═══════════════════════════════════════════
+           GATE — atmospheric dark forest environment
+           ═══════════════════════════════════════════ */
+        #_G{
+            position:fixed;inset:0;z-index:9999;overflow:hidden;
+            background:
+                radial-gradient(ellipse 130% 90% at 18% 65%,  #0c1f0f 0%, transparent 55%),
+                radial-gradient(ellipse  70% 80% at 85% 20%,  #07101a 0%, transparent 55%),
+                radial-gradient(ellipse  90% 60% at 55% 100%, #080e0b 0%, transparent 60%),
+                #040708;
+            animation:_gin .6s ease both;
+        }
+        @keyframes _gin{from{opacity:0;}to{opacity:1;}}
+
+        /* vignette depth */
+        #_G::before{
+            content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+            background:radial-gradient(ellipse 85% 85% at 50% 50%,transparent 30%,rgba(0,0,0,.65) 100%);
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #0a0a0a;
-            color: #e0e0e0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem;
-            line-height: 1.6;
+        /* subtle grid weave */
+        #_G::after{
+            content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
+            background:
+                repeating-linear-gradient(0deg,  transparent,transparent 59px, rgba(255,255,255,.016) 60px),
+                repeating-linear-gradient(90deg, transparent,transparent 59px, rgba(255,255,255,.016) 60px);
         }
 
-        .container {
-            width: 100%;
-            max-width: 800px;
+        /* ambient floating mist particles */
+        .px{
+            position:absolute;border-radius:50%;pointer-events:none;
+            animation:_rise linear infinite;z-index:3;
+        }
+        @keyframes _rise{
+            0%  {transform:translateY(106vh) scale(.4);opacity:0;}
+            7%  {opacity:1;}
+            93% {opacity:.25;}
+            100%{transform:translateY(-8vh)  scale(1);opacity:0;}
         }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        /* glowing center orb */
+        #_Go{
+            position:absolute;top:50%;left:50%;z-index:3;pointer-events:none;
+            width:260px;height:260px;border-radius:50%;
+            transform:translate(-50%,-50%);
+            background:radial-gradient(ellipse,rgba(30,75,38,.09) 0%,transparent 72%);
+            animation:_orb 7s ease-in-out infinite alternate;
+        }
+        @keyframes _orb{
+            from{transform:translate(-50%,-50%) scale(1);  opacity:.7;}
+            to  {transform:translate(-50%,-50%) scale(1.7);opacity:1;}
         }
 
-        .subtitle {
-            text-align: center;
-            color: #888;
-            margin-bottom: 3rem;
+        /* emoji drift container */
+        #_Ge{position:absolute;inset:0;z-index:5;overflow:hidden;}
+
+        /* each emoji node */
+        .em{
+            position:absolute;cursor:pointer;user-select:none;
+            pointer-events:auto;will-change:transform;line-height:1;
         }
 
-        .file-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
+        /* subtle bottom glow line — decorative only */
+        #_Gr{
+            position:absolute;bottom:0;left:0;right:0;height:1.5px;
+            background:rgba(255,255,255,.03);z-index:10;
         }
 
-        .file-card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+        /* ambient hint — looks like a UX label, not a clue */
+        #_Gl{
+            position:absolute;bottom:12px;left:0;right:0;text-align:center;z-index:10;
+            font:400 .58rem/1 'Helvetica Neue',Helvetica,sans-serif;
+            letter-spacing:.28em;text-transform:uppercase;
+            color:rgba(255,255,255,.09);user-select:none;
+            animation:_hlp 6s ease-in-out infinite;
+        }
+        @keyframes _hlp{0%,100%{opacity:.45;}50%{opacity:1;}}
+
+        /* ═══════════════════════════════════════════
+           FAKE SUCCESS PANEL
+           ═══════════════════════════════════════════ */
+        #_Gf{
+            position:fixed;inset:0;z-index:10001;
+            display:none;flex-direction:column;
+            align-items:center;justify-content:center;
+            background:rgba(2,4,7,.97);
+            backdrop-filter:blur(30px) saturate(.35);
+        }
+        #_Gf.on{display:flex;animation:_fon .5s ease;}
+        @keyframes _fon{from{opacity:0;}to{opacity:1;}}
+
+        /* radiating success rings */
+        .fr{
+            position:absolute;border-radius:50%;pointer-events:none;
+            border:1px solid rgba(110,240,145,.1);
+            top:50%;left:50%;
+            animation:_fring 2.8s ease-out infinite;
+        }
+        @keyframes _fring{
+            0%  {transform:translate(-50%,-50%) scale(.35);opacity:.65;}
+            100%{transform:translate(-50%,-50%) scale(4.2); opacity:0;}
         }
 
-        .file-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
-            border-color: #667eea;
+        .fc{position:relative;z-index:1;text-align:center;padding:3.5rem 5rem;}
+        .fi{
+            font-size:4rem;display:block;margin-bottom:1.6rem;
+            animation:_fibounce .7s cubic-bezier(.34,1.56,.64,1) .15s both;
+        }
+        @keyframes _fibounce{
+            from{transform:scale(0) rotate(-25deg);opacity:0;}
+            to  {transform:scale(1) rotate(0);       opacity:1;}
+        }
+        .ft{
+            font:700 2.9rem/1.1 'Helvetica Neue',Helvetica,sans-serif;
+            color:#fff;letter-spacing:-.025em;margin-bottom:.8rem;
+        }
+        .fs2{
+            font:400 .78rem/1 'Helvetica Neue',Helvetica,sans-serif;
+            letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.28);
         }
 
-        .file-icon {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            border-radius: 10px;
+        /* ═══════════════════════════════════════════
+           ORIGINAL PROTECTED PAGE
+           ═══════════════════════════════════════════ */
+        #_P{
+            min-height:100vh;display:flex;flex-direction:column;
+            align-items:center;padding:2rem;
+            background:#0a0a0a;color:#e0e0e0;line-height:1.6;
+            font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+            opacity:0;pointer-events:none;
+            transition:opacity 1.05s ease .1s;
         }
+        #_P.vis{opacity:1;pointer-events:auto;}
 
-        .pdf-icon {
-            background: rgba(255, 87, 87, 0.1);
-            color: #ff5757;
+        /* original page internals */
+        .container{width:100%;max-width:800px;}
+        h1{
+            font-size:2.5rem;margin-bottom:.5rem;text-align:center;
+            background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
         }
-
-        .img-icon {
-            background: rgba(69, 183, 209, 0.1);
-            color: #45b7d1;
+        .subtitle{text-align:center;color:#888;margin-bottom:3rem;}
+        .file-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+            gap:1.5rem;
         }
-
-        .file-title {
-            font-size: 1.1rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: #f0f0f0;
+        .file-card{
+            background:#1a1a1a;border:1px solid #333;border-radius:12px;
+            padding:1.5rem;transition:all .3s ease;
+            position:relative;overflow:hidden;
         }
-
-        .file-name {
-            font-size: 0.85rem;
-            color: #666;
-            margin-bottom: 1.5rem;
-            font-family: monospace;
+        .file-card:hover{
+            transform:translateY(-5px);
+            box-shadow:0 10px 30px rgba(102,126,234,.2);
+            border-color:#667eea;
         }
-
-        .download-btn {
-            width: 100%;
-            padding: 0.75rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: transform 0.2s ease;
+        .file-icon{
+            width:60px;height:60px;margin-bottom:1rem;
+            display:flex;align-items:center;justify-content:center;
+            font-size:2rem;border-radius:10px;
         }
-
-        .download-btn:hover {
-            transform: scale(1.02);
+        .pdf-icon{background:rgba(255,87,87,.1); color:#ff5757;}
+        .img-icon{background:rgba(69,183,209,.1);color:#45b7d1;}
+        .file-title{font-size:1.1rem;font-weight:500;margin-bottom:.5rem;color:#f0f0f0;}
+        .file-name{font-size:.85rem;color:#666;margin-bottom:1.5rem;font-family:monospace;}
+        .download-btn{
+            width:100%;padding:.75rem;border:none;border-radius:8px;
+            background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            color:#fff;font-size:1rem;font-weight:500;cursor:pointer;
+            transition:transform .2s ease;
         }
-
-        .download-btn:active {
-            transform: scale(0.98);
-        }
-
-        .no-files {
-            text-align: center;
-            color: #555;
-            padding: 3rem;
-        }
+        .download-btn:hover {transform:scale(1.02);}
+        .download-btn:active{transform:scale(.98);}
+        .no-files{text-align:center;color:#555;padding:3rem;}
     </style>
 </head>
 <body>
+
+<!-- ═══════════ GATE LAYER ═══════════ -->
+<div id="_G">
+    <div id="_Go"></div>
+    <div id="_Ge"></div>
+    <div id="_Gr"></div>
+    <div id="_Gl">Loading experience&hellip;</div>
+
+    <!-- Fake success panel (only shown on failure) -->
+    <div id="_Gf">
+        <div class="fr" style="width:320px;height:320px;animation-delay:0s"></div>
+        <div class="fr" style="width:320px;height:320px;animation-delay:1s"></div>
+        <div class="fr" style="width:320px;height:320px;animation-delay:2s"></div>
+        <div class="fc">
+            <span class="fi">✨</span>
+            <div class="ft">Congratulations!</div>
+            <div class="fs2">Verification complete&hellip;</div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ PROTECTED CONTENT ═══════════ -->
+<div id="_P">
     <div class="container">
         <h1>📁 Download Center</h1>
         <p class="subtitle">Your files, ready when you are</p>
-        
-        <div id="fileGrid" class="file-grid">
-            <!-- Files will be inserted here by JavaScript -->
+        <div id="fileGrid" class="file-grid"></div>
+        <div style="text-align:center;margin-top:160px;">
+            <a href="https://plabonkumersarker.github.io/download.tool/" target="_blank"
+               style="color:#8a8a8a;text-decoration:none;margin-right:14px;">1.Create_Code</a>
+            <a href="https://github.com/plabonkumersarker/download/edit/gh-pages/index.html" target="_blank"
+               style="color:#9a9a9a;text-decoration:none;margin-right:14px;">2.Submit_Code</a>
+            <a href="https://github.com/plabonkumersarker/download/upload/gh-pages" target="_blank"
+               style="color:#9a9a9a;text-decoration:none;">3.Upload_Files</a>
         </div>
-		<div style="text-align: center; margin-top: 160px;">
-  <a href="https://plabonkumersarker.github.io/download.tool/" target="_blank"
-     style="color: #8a8a8a; text-decoration: none; margin-right: 14px;">
-    1.Create_Code 
-  </a>
-  <a href="https://github.com/plabonkumersarker/download/edit/gh-pages/index.html" target="_blank"
-     style="color: #9a9a9a; text-decoration: none;">
-    2.Submit_Code
-  </a>
-  <a href="https://github.com/plabonkumersarker/download/upload/gh-pages" target="_blank"
-     style="color: #9a9a9a; text-decoration: none;">
-    3.Upload_Files
-  </a>
-</div>
     </div>
+</div>
 
-    <script>
-        // Configuration: Add your files here
-        // Format: { filename: "your-file.pdf", title: "Human Readable Title", type: "pdf" }
-        const files = [
-            { filename: "1.pdf", title: "Admit Card (OC - 23)", type: "pdf" },
-            { filename: "2.pdf", title: "Admit Card (OG - 23)", type: "pdf" },
-            { filename: "3.pdf", title: "Admit Card (SO - 23)", type: "pdf" },
-            { filename: "4.pdf", title: "ATN (SO - 23)", type: "pdf" },
-        	{ filename: "5.pdf", title: "ATN (OC - 23)", type: "pdf" },
-			{ filename: "6.pdf", title: "ATN (OG - 23)", type: "pdf" },
-			{
-  "filename": "7.pdf",
-  "title": "Admit Card (SO-24)",
-  "type": "pdf"
-},
-{
-  "filename": "8.pdf",
-  "title": "Application Copy(BEZA)",
-  "type": "pdf"
-},
-			{
-  "filename": "9.pdf",
-  "title": "ATN (SO-24)",
-  "type": "pdf"
-},
-{
-  "filename": "10.pdf",
-  "title": "ATN (OG-24)",
-  "type": "pdf"
-},
-{
-  "filename": "11.pdf",
-  "title": "ATN (OC-24)",
-  "type": "pdf"
-},
-		 {
-  "filename": "12.pdf",
-  "title": "Admit Card (OG - 24)",
-  "type": "pdf"
-},
-			{
-  "filename": "13.pdf",
-  "title": "ATN (BB - AD)",
-  "type": "pdf"
-}
-        ];
+<script>
+/* ─────────────────────────────────────────
+   SECTION A  ·  gate engine
+   ───────────────────────────────────────── */
+(function(){
 
-        function getFileIcon(type) {
-            if (type === 'pdf') return '📄';
-            if (type === 'image') return '🖼️';
-            return '📁';
+    /* authorized codepoint registry */
+    var _k = new Set([0x1F333, 0x1F332, 0x1F334]);
+
+    /* codepoint resolver */
+    var _m = function(e){
+        var a = Array.from(e).map(function(c){ return c.codePointAt(0); });
+        return _k.has(a[0]);
+    };
+
+    /* challenge parameters */
+    var _x  = false;  /* breach flag  */
+    var _z  = false;  /* closed flag  */
+    var _tc = 0;      /* authorized tap counter */
+    var _tReq = 4;    /* taps required to unlock */
+
+    /* emoji population — trees embedded as unicode escapes */
+    var _pool = [
+        '🦋','🐦','🦜','🦅','🐝','🦊','🦌','🐸',
+        '🦆','🦉','🦢','🦩','🦚','🦜',
+        '🌸','🌺','🌻','🌹','🍀','🍁','🌿','🌾','🌱','🌔',
+        '⭐','💫','☁️','🌊','🔮','🌙','✨','🦝','🐺','🐞',
+        '\uD83C\uDF33',
+        '\uD83C\uDF32',
+        '\uD83C\uDF34',
+        '\uD83C\uDF33',
+        '\uD83C\uDF34',
+        '\uD83C\uDF33',
+        '\uD83C\uDF32'
+    ];
+
+    var gEl = document.getElementById('_G');
+    var gEm = document.getElementById('_Ge');
+    var gFk = document.getElementById('_Gf');
+    var pEl = document.getElementById('_P');
+
+    /* ── ambient mist particles ── */
+    for(var i = 0; i < 32; i++){
+        var p  = document.createElement('div');
+        p.className = 'px';
+        var sz = .8 + Math.random() * 3.2;
+        var rv = 70  + Math.floor(Math.random() * 55);
+        var gv = 140 + Math.floor(Math.random() * 85);
+        var bv = 75  + Math.floor(Math.random() * 55);
+        p.style.cssText =
+            'width:'  + sz + 'px;' +
+            'height:' + sz + 'px;' +
+            'left:'   + (Math.random() * 100) + '%;' +
+            'background:rgba(' + rv + ',' + gv + ',' + bv + ',0.2);' +
+            'animation-duration:' + (9  + Math.random() * 17) + 's;' +
+            'animation-delay:'    + (-Math.random() * 15)     + 's;';
+        gEl.appendChild(p);
+    }
+
+    /* ── spawn a single drifting emoji ── */
+    function _spE(){
+        if(_z) return;
+        var em  = _pool[Math.floor(Math.random() * _pool.length)];
+        var el  = document.createElement('div');
+        el.className = 'em';
+
+        var sz  = 2.8 + Math.random() * 3.2;
+        var yp  = 3   + Math.random() * 84;
+        var vd  = 9000 + Math.random() * 8000;
+        var dl  = Math.random() * 400;
+        var amp = 7   + Math.random() * 22;
+        var frq = .7  + Math.random() * 1.4;
+
+        el.textContent = em;
+        el.style.cssText =
+            'font-size:' + sz + 'rem;' +
+            'top:'        + yp + 'vh;' +
+            'left:-110px;' +
+            'opacity:'    + (.5 + Math.random() * .5) + ';';
+
+        gEm.appendChild(el);
+
+        var W    = window.innerWidth + 220;
+        var t0   = null;
+        var live = true;
+
+        /* float animation */
+        function mv(ts){
+            if(!live) return;
+            if(!t0) t0 = ts;
+            var raw = (ts - t0 - dl) / vd;
+            if(raw < 0){ requestAnimationFrame(mv); return; }
+            var pr  = Math.min(raw, 1);
+            var dy  = Math.sin(pr * Math.PI * frq) * amp;
+            el.style.transform = 'translate(' + Math.round(pr * W) + 'px,' + Math.round(dy) + 'px)';
+            if(pr < 1) requestAnimationFrame(mv);
+            else if(live){ live = false; el.remove(); }
         }
+        requestAnimationFrame(mv);
 
-        function createFileCard(file) {
-            const card = document.createElement('div');
-            card.className = 'file-card';
-            
-            const iconClass = file.type === 'pdf' ? 'pdf-icon' : 'img-icon';
-            
-            card.innerHTML = `
-                <div class="file-icon ${iconClass}">
-                    ${getFileIcon(file.type)}
-                </div>
-                <div class="file-title">${file.title}</div>
-                <div class="file-name">${file.filename}</div>
-                <button class="download-btn" onclick="downloadFile('${file.filename}')">
-                    Download
-                </button>
-            `;
-            
-            return card;
-        }
+        /* tap / touch handler */
+        function _tap(ev){
+            ev.stopPropagation();
+            if(!live) return;
+            live = false;
+            el.removeEventListener('click',     _tap);
+            el.removeEventListener('touchstart', _tap);
 
-        function downloadFile(filename) {
-            // Create a temporary link element
-            const link = document.createElement('a');
-            link.href = filename;
-            link.download = filename;
-            link.style.display = 'none';
-            
-            // Add to DOM, click, and remove
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Initialize the page
-        function init() {
-            const grid = document.getElementById('fileGrid');
-            
-            if (files.length === 0) {
-                grid.innerHTML = '<div class="no-files">No files available for download.</div>';
-                return;
+            if(!_m(em)){
+                /* wrong tap — trigger decoy immediately */
+                _x = true;
+                _end();
+            } else {
+                /* authorized tap */
+                _tc++;
+                if(_tc >= _tReq) _end();
             }
-            
-            files.forEach(file => {
-                grid.appendChild(createFileCard(file));
-            });
+
+            /* burst — scale-glow-shrink */
+            var tx   = el.style.transform;
+            var bt0  = null;
+            var bDur = 440;
+
+            function bust(ts){
+                if(!bt0) bt0 = ts;
+                var pr = Math.min((ts - bt0) / bDur, 1);
+                var sc, op;
+                if(pr < .28){
+                    sc = 1 + (pr / .28) * .65;
+                    op = 1;
+                } else {
+                    var q = (pr - .28) / .72;
+                    sc   = 1.65 - q * 1.6;
+                    op   = 1 - q;
+                }
+                el.style.transform = tx + ' scale(' + sc + ')';
+                el.style.opacity   = op;
+                el.style.filter    = 'drop-shadow(0 0 ' + Math.round(28*(1-pr)) + 'px rgba(255,210,80,' + (1-pr).toFixed(2) + '))';
+                if(pr < 1) requestAnimationFrame(bust);
+                else el.remove();
+            }
+            requestAnimationFrame(bust);
         }
 
-        // Run on page load
-        init();
-    </script>
+        el.addEventListener('click',     _tap);
+        el.addEventListener('touchstart', _tap, {passive: true});
+        setTimeout(function(){ if(live){ live = false; el.remove(); } }, vd + dl + 350);
+    }
+
+    /* ── spawn loop with variable interval ── */
+    var _sT;
+    function _loop(){
+        if(_z) return;
+        _spE();
+        if(Math.random() > .48) setTimeout(_spE, 180 + Math.random() * 420);
+        _sT = setTimeout(_loop, 480 + Math.random() * 980);
+    }
+    _loop();
+
+    /* ── resolution — triggered by user action only ── */
+    function _end(){
+        if(_z) return;
+        _z = true;
+        clearTimeout(_sT);
+
+        if(!_x && _tc >= _tReq){
+            /* ✓ authorized — silently reveal page */
+            setTimeout(function(){
+                gEl.style.transition    = 'opacity 1.2s ease';
+                gEl.style.opacity       = '0';
+                gEl.style.pointerEvents = 'none';
+                pEl.classList.add('vis');
+                setTimeout(function(){ gEl.remove(); }, 1350);
+            }, 180);
+        } else {
+            /* ✗ unauthorized — show decoy, then redirect */
+            gFk.classList.add('on');
+            setTimeout(function(){
+                window.location.replace('https://www.google.com');
+            }, 2600);
+        }
+    }
+
+    /* no auto-timeout — gate runs until user resolves it */
+
+})();
+
+/* ─────────────────────────────────────────
+   SECTION B  ·  page logic (original)
+   ───────────────────────────────────────── */
+const files = [
+    {filename:"1.pdf",  title:"Admit Card (OC - 23)",  type:"pdf"},
+    {filename:"2.pdf",  title:"Admit Card (OG - 23)",  type:"pdf"},
+    {filename:"3.pdf",  title:"Admit Card (SO - 23)",  type:"pdf"},
+    {filename:"4.pdf",  title:"ATN (SO - 23)",          type:"pdf"},
+    {filename:"5.pdf",  title:"ATN (OC - 23)",          type:"pdf"},
+    {filename:"6.pdf",  title:"ATN (OG - 23)",          type:"pdf"},
+    {filename:"7.pdf",  title:"Admit Card (SO-24)",     type:"pdf"},
+    {filename:"8.pdf",  title:"Application Copy(BEZA)", type:"pdf"},
+    {filename:"9.pdf",  title:"ATN (SO-24)",             type:"pdf"},
+    {filename:"10.pdf", title:"ATN (OG-24)",             type:"pdf"},
+    {filename:"11.pdf", title:"ATN (OC-24)",             type:"pdf"},
+    {filename:"12.pdf", title:"Admit Card (OG - 24)",   type:"pdf"},
+    {filename:"13.pdf", title:"ATN (BB - AD)",           type:"pdf"}
+];
+
+function getFileIcon(t){
+    return t === 'pdf' ? '📄' : t === 'image' ? '🖼️' : '📁';
+}
+
+function createFileCard(f){
+    const c  = document.createElement('div');
+    c.className = 'file-card';
+    const ic = f.type === 'pdf' ? 'pdf-icon' : 'img-icon';
+    c.innerHTML =
+        '<div class="file-icon ' + ic + '">' + getFileIcon(f.type) + '</div>' +
+        '<div class="file-title">' + f.title    + '</div>' +
+        '<div class="file-name">'  + f.filename + '</div>' +
+        '<button class="download-btn" onclick="downloadFile(\'' + f.filename + '\')">Download</button>';
+    return c;
+}
+
+function downloadFile(fn){
+    const l = document.createElement('a');
+    l.href = fn; l.download = fn; l.style.display = 'none';
+    document.body.appendChild(l); l.click(); document.body.removeChild(l);
+}
+
+(function(){
+    const g = document.getElementById('fileGrid');
+    if(!files.length){
+        g.innerHTML = '<div class="no-files">No files available for download.</div>';
+        return;
+    }
+    files.forEach(f => g.appendChild(createFileCard(f)));
+})();
+</script>
 </body>
 </html>
