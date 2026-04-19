@@ -8,35 +8,32 @@
         *{margin:0;padding:0;box-sizing:border-box;}
         body{background:#050a06;overflow-x:hidden;}
 
-        /* ═══════════════════════════════════════════
-           GATE — atmospheric dark forest environment
-           ═══════════════════════════════════════════ */
+        /* ═══════ GATE LAYER ═══════ */
         #_G{
             position:fixed;inset:0;z-index:9999;overflow:hidden;
             background:
-                radial-gradient(ellipse 130% 90% at 18% 65%,  #0c1f0f 0%, transparent 55%),
-                radial-gradient(ellipse  70% 80% at 85% 20%,  #07101a 0%, transparent 55%),
-                radial-gradient(ellipse  90% 60% at 55% 100%, #080e0b 0%, transparent 60%),
+                radial-gradient(ellipse 130% 90% at 18% 65%, #0c1f0f 0%, transparent 55%),
+                radial-gradient(ellipse  70% 80% at 85% 20%, #07101a 0%, transparent 55%),
+                radial-gradient(ellipse  90% 60% at 55% 100%,#080e0b 0%, transparent 60%),
                 #040708;
             animation:_gin .6s ease both;
         }
         @keyframes _gin{from{opacity:0;}to{opacity:1;}}
 
-        /* vignette depth */
+        /* vignette */
         #_G::before{
             content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
-            background:radial-gradient(ellipse 85% 85% at 50% 50%,transparent 30%,rgba(0,0,0,.65) 100%);
+            background:radial-gradient(ellipse 85% 85% at 50% 50%,transparent 30%,rgba(0,0,0,.7) 100%);
         }
-
-        /* subtle grid weave */
+        /* grid weave */
         #_G::after{
             content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
             background:
-                repeating-linear-gradient(0deg,  transparent,transparent 59px, rgba(255,255,255,.016) 60px),
-                repeating-linear-gradient(90deg, transparent,transparent 59px, rgba(255,255,255,.016) 60px);
+                repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(255,255,255,.015) 60px),
+                repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(255,255,255,.015) 60px);
         }
 
-        /* ambient floating mist particles */
+        /* mist particles */
         .px{
             position:absolute;border-radius:50%;pointer-events:none;
             animation:_rise linear infinite;z-index:3;
@@ -45,50 +42,98 @@
             0%  {transform:translateY(106vh) scale(.4);opacity:0;}
             7%  {opacity:1;}
             93% {opacity:.25;}
-            100%{transform:translateY(-8vh)  scale(1);opacity:0;}
+            100%{transform:translateY(-8vh) scale(1);opacity:0;}
         }
 
-        /* glowing center orb */
+        /* twinkling stars */
+        .st{
+            position:absolute;border-radius:50%;pointer-events:none;z-index:3;
+            background:rgba(255,255,255,.65);
+            animation:_twk ease-in-out infinite alternate;
+        }
+        @keyframes _twk{from{opacity:.08;}to{opacity:.6;}}
+
+        /* center orb */
         #_Go{
             position:absolute;top:50%;left:50%;z-index:3;pointer-events:none;
-            width:260px;height:260px;border-radius:50%;
+            width:340px;height:340px;border-radius:50%;
             transform:translate(-50%,-50%);
-            background:radial-gradient(ellipse,rgba(30,75,38,.09) 0%,transparent 72%);
+            background:radial-gradient(ellipse,rgba(30,80,38,.14) 0%,transparent 72%);
             animation:_orb 7s ease-in-out infinite alternate;
         }
         @keyframes _orb{
-            from{transform:translate(-50%,-50%) scale(1);  opacity:.7;}
-            to  {transform:translate(-50%,-50%) scale(1.7);opacity:1;}
+            from{transform:translate(-50%,-50%) scale(1);  opacity:.6;}
+            to  {transform:translate(-50%,-50%) scale(1.8);opacity:1;}
         }
 
-        /* emoji drift container */
-        #_Ge{position:absolute;inset:0;z-index:5;overflow:hidden;}
+        /* emoji container */
+        #_Ge{position:absolute;inset:0;z-index:5;}
 
-        /* each emoji node */
+        /* ── emoji node: static, bob only ── */
         .em{
             position:absolute;cursor:pointer;user-select:none;
-            pointer-events:auto;will-change:transform;line-height:1;
+            pointer-events:auto;line-height:1;
+            font-size:3.2rem;         /* ~51px — big enough on small phones */
+            padding:14px;             /* expands tap target to ~79px */
+            border-radius:50%;
+            -webkit-tap-highlight-color:transparent;
+            transition:filter .18s ease;
+        }
+        @media(min-width:480px){.em{font-size:3.7rem;padding:14px;}}
+        @media(min-width:900px){.em{font-size:4.2rem;padding:16px;}}
+
+        .em:hover{
+            filter:drop-shadow(0 0 16px rgba(255,220,80,.85));
         }
 
-        /* subtle bottom glow line — decorative only */
+        /* entry fade-in (opacity only, to avoid transform conflict with bob) */
+        @keyframes _eIn{
+            from{opacity:0;}
+            to  {opacity:var(--eo,1);}
+        }
+        /* vertical bob only */
+        @keyframes _bob{
+            from{transform:translateY(0);}
+            to  {transform:translateY(var(--ba,-10px));}
+        }
+
+        /* bottom glow rule */
         #_Gr{
             position:absolute;bottom:0;left:0;right:0;height:1.5px;
             background:rgba(255,255,255,.03);z-index:10;
         }
 
-        /* ambient hint — looks like a UX label, not a clue */
+        /* hint label */
         #_Gl{
-            position:absolute;bottom:12px;left:0;right:0;text-align:center;z-index:10;
-            font:400 .58rem/1 'Helvetica Neue',Helvetica,sans-serif;
-            letter-spacing:.28em;text-transform:uppercase;
-            color:rgba(255,255,255,.09);user-select:none;
+            position:absolute;bottom:56px;left:0;right:0;
+            text-align:center;z-index:10;
+            font:400 .55rem/1 'Helvetica Neue',Helvetica,sans-serif;
+            letter-spacing:.32em;text-transform:uppercase;
+            color:rgba(255,255,255,.08);user-select:none;
             animation:_hlp 6s ease-in-out infinite;
         }
-        @keyframes _hlp{0%,100%{opacity:.45;}50%{opacity:1;}}
+        @keyframes _hlp{0%,100%{opacity:.4;}50%{opacity:1;}}
 
-        /* ═══════════════════════════════════════════
-           FAKE SUCCESS PANEL
-           ═══════════════════════════════════════════ */
+        /* ── progress dots ── */
+        #_Gprog{
+            position:absolute;bottom:24px;left:50%;
+            transform:translateX(-50%);
+            display:flex;gap:14px;z-index:10;align-items:center;
+        }
+        .pd{
+            width:7px;height:7px;border-radius:50%;
+            background:rgba(255,255,255,.1);
+            border:1px solid rgba(255,255,255,.18);
+            transition:all .5s cubic-bezier(.34,1.56,.64,1);
+        }
+        .pd.on{
+            background:rgba(110,245,148,.88);
+            border-color:rgba(110,245,148,.95);
+            box-shadow:0 0 8px rgba(110,245,148,.65),0 0 18px rgba(110,245,148,.28);
+            transform:scale(1.4);
+        }
+
+        /* ═══════ FAKE SUCCESS PANEL ═══════ */
         #_Gf{
             position:fixed;inset:0;z-index:10001;
             display:none;flex-direction:column;
@@ -99,7 +144,6 @@
         #_Gf.on{display:flex;animation:_fon .5s ease;}
         @keyframes _fon{from{opacity:0;}to{opacity:1;}}
 
-        /* radiating success rings */
         .fr{
             position:absolute;border-radius:50%;pointer-events:none;
             border:1px solid rgba(110,240,145,.1);
@@ -118,7 +162,7 @@
         }
         @keyframes _fibounce{
             from{transform:scale(0) rotate(-25deg);opacity:0;}
-            to  {transform:scale(1) rotate(0);       opacity:1;}
+            to  {transform:scale(1) rotate(0);      opacity:1;}
         }
         .ft{
             font:700 2.9rem/1.1 'Helvetica Neue',Helvetica,sans-serif;
@@ -129,9 +173,7 @@
             letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.28);
         }
 
-        /* ═══════════════════════════════════════════
-           ORIGINAL PROTECTED PAGE
-           ═══════════════════════════════════════════ */
+        /* ═══════ PROTECTED PAGE ═══════ */
         #_P{
             min-height:100vh;display:flex;flex-direction:column;
             align-items:center;padding:2rem;
@@ -142,7 +184,6 @@
         }
         #_P.vis{opacity:1;pointer-events:auto;}
 
-        /* original page internals */
         .container{width:100%;max-width:800px;}
         h1{
             font-size:2.5rem;margin-bottom:.5rem;text-align:center;
@@ -170,7 +211,7 @@
             display:flex;align-items:center;justify-content:center;
             font-size:2rem;border-radius:10px;
         }
-        .pdf-icon{background:rgba(255,87,87,.1); color:#ff5757;}
+        .pdf-icon{background:rgba(255,87,87,.1);color:#ff5757;}
         .img-icon{background:rgba(69,183,209,.1);color:#45b7d1;}
         .file-title{font-size:1.1rem;font-weight:500;margin-bottom:.5rem;color:#f0f0f0;}
         .file-name{font-size:.85rem;color:#666;margin-bottom:1.5rem;font-family:monospace;}
@@ -194,7 +235,15 @@
     <div id="_Gr"></div>
     <div id="_Gl">Loading experience&hellip;</div>
 
-    <!-- Fake success panel (only shown on failure) -->
+    <!-- 4 progress dots -->
+    <div id="_Gprog">
+        <div class="pd"></div>
+        <div class="pd"></div>
+        <div class="pd"></div>
+        <div class="pd"></div>
+    </div>
+
+    <!-- Fake success panel -->
     <div id="_Gf">
         <div class="fr" style="width:320px;height:320px;animation-delay:0s"></div>
         <div class="fr" style="width:320px;height:320px;animation-delay:1s"></div>
@@ -226,44 +275,61 @@
 
 <script>
 /* ─────────────────────────────────────────
-   SECTION A  ·  gate engine
+   SECTION A · gate engine
    ───────────────────────────────────────── */
 (function(){
 
-    /* authorized codepoint registry */
+    /* authorized codepoints: 🌳 🌲 🌴 */
     var _k = new Set([0x1F333, 0x1F332, 0x1F334]);
-
-    /* codepoint resolver */
     var _m = function(e){
         var a = Array.from(e).map(function(c){ return c.codePointAt(0); });
         return _k.has(a[0]);
     };
 
-    /* challenge parameters */
-    var _x  = false;  /* breach flag  */
-    var _z  = false;  /* closed flag  */
-    var _tc = 0;      /* authorized tap counter */
-    var _tReq = 4;    /* taps required to unlock */
+    var _x   = false;   /* breach flag */
+    var _z   = false;   /* closed flag */
+    var _tc  = 0;       /* correct-tap counter */
+    var _tReq = 4;      /* taps required */
 
-    /* emoji population — trees embedded as unicode escapes */
-    var _pool = [
+    /* wrong emoji pool */
+    var wrongPool = [
         '🦋','🐦','🦜','🦅','🐝','🦊','🦌','🐸',
-        '🦆','🦉','🦢','🦩','🦚','🦜',
-        '🌸','🌺','🌻','🌹','🍀','🍁','🌿','🌾','🌱','🌔',
-        '⭐','💫','☁️','🌊','🔮','🌙','✨','🦝','🐺','🐞',
-        '\uD83C\uDF33',
-        '\uD83C\uDF32',
-        '\uD83C\uDF34',
-        '\uD83C\uDF33',
-        '\uD83C\uDF34',
-        '\uD83C\uDF33',
-        '\uD83C\uDF32'
+        '🦆','🦉','🦢','🦩','🦚','🌸','🌺','🌻',
+        '🌹','🍀','🍁','🌿','🌾','🌱','⭐','💫',
+        '☁️','🌊','🔮','🌙','✨','🦝','🐺','🐞'
     ];
 
-    var gEl = document.getElementById('_G');
-    var gEm = document.getElementById('_Ge');
-    var gFk = document.getElementById('_Gf');
-    var pEl = document.getElementById('_P');
+    /* 7 correct emojis embedded (need only 4 clicks to unlock) */
+    var correctOnes = [
+        '\uD83C\uDF33','\uD83C\uDF32','\uD83C\uDF34',
+        '\uD83C\uDF33','\uD83C\uDF32','\uD83C\uDF34',
+        '\uD83C\uDF33'
+    ];
+
+    /*
+     * 20 fixed grid positions [left%, top%]
+     * 4 columns × 5 rows — spaced so 3–4rem emojis never overlap
+     * Columns at ~2, 27, 52, 77% → 25% gap ≈ 94px on 375px screen
+     * Rows at ~9, 27, 46, 65, 82% → 18-19% gap ≈ 120px on 667px screen
+     */
+    var POSITIONS = [
+        [2, 9], [27, 7], [52, 8], [77, 6],
+        [4,27], [29,28], [54,26], [78,27],
+        [2,46], [27,47], [52,45], [77,46],
+        [4,65], [29,66], [54,63], [78,64],
+        [9,82], [34,83], [59,81], [77,82]
+    ];
+
+    /* shuffle emoji assignment (positions stay in order, emojis randomised) */
+    var wrongShuffled = wrongPool.slice().sort(function(){ return Math.random() - .5; });
+    var emojis = correctOnes.concat(wrongShuffled.slice(0, POSITIONS.length - correctOnes.length));
+    emojis.sort(function(){ return Math.random() - .5; });
+
+    var gEl  = document.getElementById('_G');
+    var gEm  = document.getElementById('_Ge');
+    var gFk  = document.getElementById('_Gf');
+    var pEl  = document.getElementById('_P');
+    var dots = document.querySelectorAll('.pd');
 
     /* ── ambient mist particles ── */
     for(var i = 0; i < 32; i++){
@@ -278,119 +344,113 @@
             'height:' + sz + 'px;' +
             'left:'   + (Math.random() * 100) + '%;' +
             'background:rgba(' + rv + ',' + gv + ',' + bv + ',0.2);' +
-            'animation-duration:' + (9  + Math.random() * 17) + 's;' +
-            'animation-delay:'    + (-Math.random() * 15)     + 's;';
+            'animation-duration:' + (9 + Math.random() * 17) + 's;' +
+            'animation-delay:'    + (-Math.random() * 15)    + 's;';
         gEl.appendChild(p);
     }
 
-    /* ── spawn a single drifting emoji ── */
-    function _spE(){
-        if(_z) return;
-        var em  = _pool[Math.floor(Math.random() * _pool.length)];
-        var el  = document.createElement('div');
-        el.className = 'em';
+    /* ── twinkling stars ── */
+    for(var s = 0; s < 22; s++){
+        var st  = document.createElement('div');
+        st.className = 'st';
+        var ssz = .8 + Math.random() * 1.6;
+        st.style.cssText =
+            'width:'  + ssz + 'px;' +
+            'height:' + ssz + 'px;' +
+            'left:'   + (Math.random() * 100) + '%;' +
+            'top:'    + (Math.random() * 100) + '%;' +
+            'animation-duration:' + (1.2 + Math.random() * 3.2) + 's;' +
+            'animation-delay:'    + (-Math.random() * 3)        + 's;';
+        gEl.appendChild(st);
+    }
 
-        var sz  = 2.8 + Math.random() * 3.2;
-        var yp  = 3   + Math.random() * 84;
-        var vd  = 9000 + Math.random() * 8000;
-        var dl  = Math.random() * 400;
-        var amp = 7   + Math.random() * 22;
-        var frq = .7  + Math.random() * 1.4;
+    /* ── place static emojis ── */
+    for(var j = 0; j < POSITIONS.length; j++){
+        (function(pos, em, idx){
+            var el  = document.createElement('div');
+            el.className = 'em';
+            el.textContent = em;
 
-        el.textContent = em;
-        el.style.cssText =
-            'font-size:' + sz + 'rem;' +
-            'top:'        + yp + 'vh;' +
-            'left:-110px;' +
-            'opacity:'    + (.5 + Math.random() * .5) + ';';
+            /* individualise the bob */
+            var bobAmp = 5  + Math.random() * 14;          /* 5–19 px */
+            var bobDur = (2.5 + Math.random() * 3).toFixed(1);  /* 2.5–5.5 s */
+            var bobDel = (-(Math.random() * 5)).toFixed(2); /* phase offset */
+            var eo     = (0.52 + Math.random() * .48).toFixed(2);
 
-        gEm.appendChild(el);
+            /* tiny random jitter on position so grid looks organic */
+            var lp = (pos[0] + Math.random() * 2 - 1).toFixed(1);
+            var tp = (pos[1] + Math.random() * 2 - 1).toFixed(1);
 
-        var W    = window.innerWidth + 220;
-        var t0   = null;
-        var live = true;
+            el.style.cssText =
+                'left:' + lp + '%;' +
+                'top:'  + tp + '%;' +
+                '--ba:-' + Math.round(bobAmp) + 'px;' +
+                '--eo:' + eo + ';' +
+                /* staggered entry, then continuous bob */
+                'animation:' +
+                    '_eIn .55s ease ' + (idx * 60) + 'ms both,' +
+                    '_bob ' + bobDur + 's ' + bobDel + 's ease-in-out infinite alternate;';
 
-        /* float animation */
-        function mv(ts){
-            if(!live) return;
-            if(!t0) t0 = ts;
-            var raw = (ts - t0 - dl) / vd;
-            if(raw < 0){ requestAnimationFrame(mv); return; }
-            var pr  = Math.min(raw, 1);
-            var dy  = Math.sin(pr * Math.PI * frq) * amp;
-            el.style.transform = 'translate(' + Math.round(pr * W) + 'px,' + Math.round(dy) + 'px)';
-            if(pr < 1) requestAnimationFrame(mv);
-            else if(live){ live = false; el.remove(); }
-        }
-        requestAnimationFrame(mv);
+            gEm.appendChild(el);
 
-        /* tap / touch handler */
-        function _tap(ev){
-            ev.stopPropagation();
-            if(!live) return;
-            live = false;
-            el.removeEventListener('click',     _tap);
-            el.removeEventListener('touchstart', _tap);
+            /* ── click / touch handler ── */
+            function _tap(ev){
+                ev.stopPropagation();
+                if(_z) return;
 
-            if(!_m(em)){
-                /* wrong tap — trigger decoy immediately */
-                _x = true;
-                _end();
-            } else {
-                /* authorized tap */
-                _tc++;
-                if(_tc >= _tReq) _end();
-            }
+                el.removeEventListener('click',     _tap);
+                el.removeEventListener('touchstart', _tap);
+                el.style.pointerEvents = 'none';
 
-            /* burst — scale-glow-shrink */
-            var tx   = el.style.transform;
-            var bt0  = null;
-            var bDur = 440;
+                var isRight  = _m(em);
+                var glowRGB  = isRight ? '110,245,148' : '255,88,88';
 
-            function bust(ts){
-                if(!bt0) bt0 = ts;
-                var pr = Math.min((ts - bt0) / bDur, 1);
-                var sc, op;
-                if(pr < .28){
-                    sc = 1 + (pr / .28) * .65;
-                    op = 1;
-                } else {
-                    var q = (pr - .28) / .72;
-                    sc   = 1.65 - q * 1.6;
-                    op   = 1 - q;
+                /* freeze bob, start burst */
+                el.style.animation = 'none';
+
+                var bt0  = null;
+                var bDur = 420;
+                function bust(ts){
+                    if(!bt0) bt0 = ts;
+                    var pr = Math.min((ts - bt0) / bDur, 1);
+                    var sc, op;
+                    if(pr < .28){
+                        sc = 1 + (pr / .28) * .75;
+                        op = 1;
+                    } else {
+                        var q = (pr - .28) / .72;
+                        sc   = 1.75 - q * 1.7;
+                        op   = 1 - q;
+                    }
+                    el.style.transform = 'scale(' + sc + ')';
+                    el.style.opacity   = op;
+                    el.style.filter    = 'drop-shadow(0 0 ' + Math.round(34*(1-pr)) + 'px rgba(' + glowRGB + ',' + (1-pr).toFixed(2) + '))';
+                    if(pr < 1) requestAnimationFrame(bust);
+                    else       el.remove();
                 }
-                el.style.transform = tx + ' scale(' + sc + ')';
-                el.style.opacity   = op;
-                el.style.filter    = 'drop-shadow(0 0 ' + Math.round(28*(1-pr)) + 'px rgba(255,210,80,' + (1-pr).toFixed(2) + '))';
-                if(pr < 1) requestAnimationFrame(bust);
-                else el.remove();
+                requestAnimationFrame(bust);
+
+                if(!isRight){
+                    /* wrong tap → breach → decoy + redirect */
+                    if(!_z){ _x = true; _z = true; _end(); }
+                } else {
+                    /* correct tap */
+                    _tc++;
+                    if(_tc <= 4 && dots[_tc - 1]) dots[_tc - 1].classList.add('on');
+                    if(_tc >= _tReq && !_z){ _z = true; _end(); }
+                }
             }
-            requestAnimationFrame(bust);
-        }
 
-        el.addEventListener('click',     _tap);
-        el.addEventListener('touchstart', _tap, {passive: true});
-        setTimeout(function(){ if(live){ live = false; el.remove(); } }, vd + dl + 350);
+            el.addEventListener('click',     _tap);
+            el.addEventListener('touchstart', _tap, { passive: true });
+
+        })(POSITIONS[j], emojis[j], j);
     }
 
-    /* ── spawn loop with variable interval ── */
-    var _sT;
-    function _loop(){
-        if(_z) return;
-        _spE();
-        if(Math.random() > .48) setTimeout(_spE, 180 + Math.random() * 420);
-        _sT = setTimeout(_loop, 480 + Math.random() * 980);
-    }
-    _loop();
-
-    /* ── resolution — triggered by user action only ── */
+    /* ── resolution ── */
     function _end(){
-        if(_z) return;
-        _z = true;
-        clearTimeout(_sT);
-
         if(!_x && _tc >= _tReq){
-            /* ✓ authorized — silently reveal page */
+            /* authorised — silently reveal page */
             setTimeout(function(){
                 gEl.style.transition    = 'opacity 1.2s ease';
                 gEl.style.opacity       = '0';
@@ -399,7 +459,7 @@
                 setTimeout(function(){ gEl.remove(); }, 1350);
             }, 180);
         } else {
-            /* ✗ unauthorized — show decoy, then redirect */
+            /* unauthorised — fake success → Google */
             gFk.classList.add('on');
             setTimeout(function(){
                 window.location.replace('https://www.google.com');
@@ -407,12 +467,10 @@
         }
     }
 
-    /* no auto-timeout — gate runs until user resolves it */
-
 })();
 
 /* ─────────────────────────────────────────
-   SECTION B  ·  page logic (original)
+   SECTION B · page logic (original)
    ───────────────────────────────────────── */
 const files = [
     {filename:"1.pdf",  title:"Admit Card (OC - 23)",  type:"pdf"},
@@ -430,9 +488,7 @@ const files = [
     {filename:"13.pdf", title:"ATN (BB - AD)",           type:"pdf"}
 ];
 
-function getFileIcon(t){
-    return t === 'pdf' ? '📄' : t === 'image' ? '🖼️' : '📁';
-}
+function getFileIcon(t){ return t === 'pdf' ? '📄' : t === 'image' ? '🖼️' : '📁'; }
 
 function createFileCard(f){
     const c  = document.createElement('div');
